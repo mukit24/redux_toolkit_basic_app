@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import CustomerCard from "./componenets/customerCard";
+import ReservationCard from "./componenets/reservationCard";
+import { addReservation } from "./features/reservationSlice";
 
 function App() {
+  const reservations = useSelector(state => state.reservation.value)
+  const customers = useSelector( state => state.customer)
+
+  const [addResInput, setaddResInput] = useState("")
+  const disptach = useDispatch()
+
+  const handleAddRes = () =>{
+    if (!addResInput) return;
+    disptach(addReservation(addResInput));
+    setaddResInput("");
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h3>Reservation</h3>
+      <input type="text" value={addResInput} onChange={(e) => setaddResInput(e.target.value)} />
+      <button onClick={handleAddRes}>Add</button>
+      <ul>
+          { reservations.map( (res,index) => <ReservationCard name={res} index={index}/>)}
+      </ul>
+      <hr />
+      <h3>Active Customer</h3>
+      <ol>
+      { customers.map( res => <CustomerCard name={res}/>)}
+      </ol>
+      <hr />
     </div>
   );
 }
